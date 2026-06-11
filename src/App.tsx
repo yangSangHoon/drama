@@ -3,8 +3,11 @@ import { AuthProvider, useAuth } from '@/lib/auth'
 import { LoadingScreen } from '@/components/ui'
 import { Login } from '@/pages/Login'
 import { ProfileSetup } from '@/pages/ProfileSetup'
-import { Home } from '@/pages/Home'
+import { RoomList } from '@/pages/RoomList'
+import { CreateRoom } from '@/pages/CreateRoom'
+import { RoomPlaceholder } from '@/pages/RoomPlaceholder'
 import { DesignSystem } from '@/pages/DesignSystem'
+import type { ReactElement } from 'react'
 
 /**
  * 인증 상태에 따른 라우팅.
@@ -20,13 +23,18 @@ function AppRoutes() {
   const authed = !!session
   const onboarded = authed && !!profile
 
+  // 로그인 + 프로필 완료 시에만 접근 가능 (아니면 적절한 단계로 보냄)
+  const protect = (el: ReactElement): ReactElement => {
+    if (!authed) return <Navigate to="/login" replace />
+    if (!onboarded) return <Navigate to="/onboarding" replace />
+    return el
+  }
+
   return (
     <Routes>
       <Route
         path="/login"
-        element={
-          !authed ? <Login /> : <Navigate to={onboarded ? '/' : '/onboarding'} replace />
-        }
+        element={!authed ? <Login /> : <Navigate to={onboarded ? '/' : '/onboarding'} replace />}
       />
       <Route
         path="/onboarding"
@@ -40,18 +48,10 @@ function AppRoutes() {
           )
         }
       />
-      <Route
-        path="/"
-        element={
-          !authed ? (
-            <Navigate to="/login" replace />
-          ) : !onboarded ? (
-            <Navigate to="/onboarding" replace />
-          ) : (
-            <Home />
-          )
-        }
-      />
+
+      <Route path="/" element={protect(<RoomList />)} />
+      <Route path="/rooms/new" element={protect(<CreateRoom />)} />
+      <Route path="/rooms/:id" element={protect(<RoomPlaceholder />)} />
 
       {/* 디자인 시스템 쇼케이스 (인증 불필요) */}
       <Route path="/design" element={<DesignSystem />} />
