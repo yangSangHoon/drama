@@ -1,0 +1,95 @@
+.login {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 28px;
+  max-width: 420px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.login h1 {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-top: 20px;
+}
+.login h1 span {
+  color: var(--coral);
+}
+
+.sub {
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: 10px 0 40px;
+  line-height: 1.6;
+}
+
+.sso {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 12px;
+  transition:
+    transform 0.08s ease,
+    filter 0.15s ease;
+}
+.sso:active:not(:disabled) {
+  transform: translateY(1px) scale(0.99);
+}
+.sso:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.kakao {
+  background: #fee500;
+  color: #3b1e1e;
+}
+.google {
+  background: #fff;
+  color: var(--ink);
+  border: 1.5px solid #ede4dc;
+}
+
+.markKakao,
+.markGoogle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 900;
+}
+.markKakao {
+  background: #3b1e1e;
+  color: #fee500;
+}
+.markGoogle {
+  background: #fff;
+  border: 1px solid #eee;
+  color: #4285f4;
+}
+
+.error {
+  color: var(--coral);
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.terms {
+  font-size: 11px;
+  color: #b9afa8;
+  margin-top: 18px;
+  line-height: 1.6;
+}

@@ -1,0 +1,28 @@
+.wrap {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: var(--cream);
+}
+
+.bounce {
+  animation: bob 1s ease-in-out infinite;
+}
+
+.msg {
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(2deg);
+  }
+}
