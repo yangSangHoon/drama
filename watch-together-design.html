@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>같이볼래? 디자인 시안 v2</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --cream:#FFF6EE;
+    --coral:#FF6B57;
+    --coral-soft:#FFE3DD;
+    --lavender:#9B8CFF;
+    --lavender-soft:#EEEBFF;
+    --butter:#FFD66B;
+    --mint:#5ED5B8;
+    --ink:#3B3037;
+    --ink-soft:#8A7F86;
+    --night:#241F33;
+    --night-card:#3E3663;
+    --white:#FFFFFF;
+    --radius-lg:24px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+    background:#F3EDE6;color:var(--ink);padding:32px 20px 60px;
+  }
+  .wrap{max-width:1280px;margin:0 auto;}
+
+  /* ── 헤더 ── */
+  .doc-header{text-align:center;margin-bottom:36px;}
+  .doc-header .logo{display:inline-flex;align-items:center;gap:12px;font-size:34px;font-weight:800;letter-spacing:-1px;}
+  .doc-header .logo .dot{color:var(--coral);}
+  .doc-header p{margin-top:8px;color:var(--ink-soft);font-size:15px;}
+  .tag{display:inline-block;margin-top:14px;padding:6px 14px;border-radius:999px;background:var(--coral);color:#fff;font-size:13px;font-weight:600;}
+
+  /* ── 디자인 시스템 ── */
+  .section-title{font-size:20px;font-weight:800;margin:48px 0 18px;}
+  .ds-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;}
+  .ds-card{background:#fff;border-radius:var(--radius-lg);padding:22px;box-shadow:0 6px 24px rgba(59,48,55,.06);}
+  .ds-card h4{font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:14px;letter-spacing:.04em;}
+  .swatches{display:flex;gap:10px;flex-wrap:wrap;}
+  .sw{flex:1;min-width:64px;text-align:center;}
+  .sw .chip{height:56px;border-radius:14px;margin-bottom:8px;border:1px solid rgba(0,0,0,.04);}
+  .sw small{font-size:11px;color:var(--ink-soft);display:block;line-height:1.5;}
+  .sw b{font-size:12px;display:block;}
+  .type-row{display:flex;align-items:baseline;gap:14px;margin-bottom:12px;}
+  .type-row:last-child{margin-bottom:0;}
+  .type-row .label{font-size:11px;color:var(--ink-soft);width:88px;flex-shrink:0;}
+  .mascot-card{display:flex;align-items:center;gap:18px;}
+  .mascot-card .desc{font-size:13px;line-height:1.7;color:var(--ink-soft);}
+  .mascot-card .desc b{color:var(--ink);font-size:14px;display:block;margin-bottom:4px;}
+  .ava-variants{display:flex;gap:8px;margin-top:10px;}
+
+  /* ── 라인 아이콘 공통 ── */
+  .ic{width:20px;height:20px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+
+  /* ── 폰 프레임 ── */
+  .screens{display:flex;gap:28px;overflow-x:auto;padding:10px 4px 30px;scroll-snap-type:x mandatory;}
+  .screen-col{flex-shrink:0;scroll-snap-align:start;}
+  .screen-label{text-align:center;font-size:14px;font-weight:700;margin-bottom:12px;}
+  .screen-label small{display:block;font-weight:500;color:var(--ink-soft);font-size:12px;margin-top:2px;}
+  .phone{
+    width:320px;height:660px;background:var(--cream);
+    border-radius:40px;border:8px solid #3B3037;overflow:hidden;position:relative;
+    box-shadow:0 24px 50px rgba(59,48,55,.18);display:flex;flex-direction:column;
+  }
+  .phone.dark{background:var(--night);}
+  .notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:96px;height:22px;background:#3B3037;border-radius:999px;z-index:10;}
+
+  /* ── 1. 로그인 ── */
+  .login{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:0 28px;}
+  .login h1{font-size:30px;font-weight:800;letter-spacing:-1px;margin-top:20px;}
+  .login h1 span{color:var(--coral);}
+  .login .sub{font-size:14px;color:var(--ink-soft);margin:10px 0 40px;text-align:center;line-height:1.6;}
+  .sso{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:15px;border-radius:16px;font-weight:700;font-size:15px;border:none;margin-bottom:12px;font-family:inherit;}
+  .sso.kakao{background:#FEE500;color:#3B1E1E;}
+  .sso.google{background:#fff;color:var(--ink);border:1.5px solid #EDE4DC;}
+  .sso .mark{width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;}
+  .login .terms{font-size:11px;color:#B9AFA8;margin-top:18px;text-align:center;line-height:1.6;}
+
+  /* ── 2. 프로필 ── */
+  .profile{display:flex;flex-direction:column;height:100%;padding:64px 26px 26px;}
+  .back-ic{color:var(--ink-soft);margin-bottom:18px;}
+  .profile h2{font-size:24px;font-weight:800;letter-spacing:-.5px;line-height:1.35;}
+  .profile h2 span{color:var(--coral);}
+  .profile .desc{font-size:13px;color:var(--ink-soft);margin:8px 0 16px;}
+  .avatar-pick{display:flex;justify-content:center;margin-bottom:14px;}
+  .avatar-big{width:92px;height:92px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;border:4px solid #fff;box-shadow:0 8px 22px rgba(255,107,87,.22);}
+  .color-label{font-size:13px;font-weight:700;margin-bottom:8px;}
+  .expr-grid{display:flex;gap:7px;justify-content:center;margin-bottom:16px;}
+  .edot{width:42px;height:42px;border-radius:50%;border:2.5px solid transparent;display:flex;align-items:center;justify-content:center;}
+  .edot.sel{border-color:var(--ink);}
+  .color-grid{display:flex;gap:10px;justify-content:center;margin-bottom:16px;}
+  .cdot{width:40px;height:40px;border-radius:50%;border:2.5px solid transparent;display:flex;align-items:center;justify-content:center;}
+  .cdot.sel{border-color:var(--ink);}
+  .input-label{font-size:13px;font-weight:700;margin-bottom:8px;}
+  .input{width:100%;padding:15px 18px;border-radius:16px;border:2px solid #F0E6DE;background:#fff;font-size:15px;display:flex;justify-content:space-between;}
+  .input .count{color:#C9BFB8;font-size:13px;}
+  .cta{margin-top:auto;width:100%;padding:17px;border-radius:18px;background:var(--coral);color:#fff;font-weight:800;font-size:16px;border:none;font-family:inherit;box-shadow:0 8px 20px rgba(255,107,87,.35);}
+
+  /* ── 3. 채팅방 리스트 ── */
+  .list{display:flex;flex-direction:column;height:100%;padding:60px 0 0;}
+  .list-head{padding:0 22px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+  .list-head .hi{font-size:20px;font-weight:800;letter-spacing:-.5px;}
+  .list-head .hi span{color:var(--coral);}
+  .search{margin:0 22px 16px;display:flex;align-items:center;gap:10px;background:#fff;border-radius:999px;padding:12px 18px;color:#B9AFA8;font-size:14px;box-shadow:0 4px 12px rgba(59,48,55,.05);}
+  .search .ic{width:17px;height:17px;}
+  .filters{display:flex;gap:8px;padding:0 22px;margin-bottom:14px;}
+  .f{padding:7px 14px;border-radius:999px;font-size:12px;font-weight:700;background:#fff;color:var(--ink-soft);border:1.5px solid #EDE4DC;}
+  .f.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .room-scroll{flex:1;overflow:hidden;padding:4px 22px 0;display:flex;flex-direction:column;gap:12px;}
+  .room{background:#fff;border-radius:20px;padding:16px;display:flex;gap:13px;align-items:center;box-shadow:0 5px 16px rgba(59,48,55,.06);}
+  .room .poster{width:52px;height:68px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;}
+  .room .info{flex:1;min-width:0;}
+  .room .title{font-size:14px;font-weight:800;letter-spacing:-.3px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .room .meta{font-size:12px;color:var(--ink-soft);}
+  .room .row2{display:flex;align-items:center;gap:8px;margin-top:7px;}
+  .bd{padding:4px 11px;border-radius:999px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;}
+  .bd .d{width:6px;height:6px;border-radius:50%;}
+  .bd.live{background:#FFE3DD;color:var(--coral);}
+  .bd.live .d{background:var(--coral);}
+  .bd.soon{background:#FFF3D4;color:#C8902A;}
+  .bd.soon .d{background:#E0B554;}
+  .bd.end{background:#EFEDEA;color:#9B938E;}
+  .bd.end .d{background:#BDB5AF;}
+  .ppl{font-size:11px;color:var(--ink-soft);}
+  .fab{position:absolute;right:18px;bottom:24px;width:58px;height:58px;border-radius:50%;background:var(--coral);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(255,107,87,.45);}
+  .fab .ic{width:24px;height:24px;stroke-width:2.5;}
+
+  /* ── 4. 채팅방 ── */
+  .chat{display:flex;flex-direction:column;height:100%;padding-top:52px;color:#fff;}
+  .chat-head{padding:10px 18px 12px;border-bottom:1px solid rgba(255,255,255,.08);}
+  .chat-head .rt{display:flex;align-items:center;gap:10px;color:#B8B0CF;}
+  .chat-head .name{font-size:15px;font-weight:800;letter-spacing:-.3px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;}
+  .chat-head .ic{width:18px;height:18px;}
+  .live-dot{width:7px;height:7px;border-radius:50%;background:var(--coral);box-shadow:0 0 8px var(--coral);flex-shrink:0;}
+  .chat-head .sub2{font-size:11px;color:#B8B0CF;margin-top:5px;display:flex;align-items:center;gap:6px;}
+  .sync{margin:12px 18px 4px;background:linear-gradient(135deg,#3A3155,#2C2542);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.07);}
+  .sync .ic{width:16px;height:16px;color:var(--butter);}
+  .sync .t{font-size:12px;color:#CFC8E8;}
+  .sync .time{font-size:13px;font-weight:800;color:var(--butter);margin-left:auto;font-variant-numeric:tabular-nums;}
+  .msgs{flex:1;overflow:hidden;padding:12px 18px;display:flex;flex-direction:column;gap:12px;}
+  .msg{display:flex;gap:9px;max-width:88%;}
+  .msg .a{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .msg .nick{font-size:12px;font-weight:600;color:#CFC7EA;margin-bottom:4px;}
+  .bubble{background:var(--night-card);padding:11px 15px;border-radius:4px 16px 16px 16px;font-size:14px;line-height:1.6;color:#F6F3FD;border:1px solid rgba(255,255,255,.06);}
+  .msg.me{align-self:flex-end;flex-direction:row-reverse;}
+  .msg.me .bubble{background:var(--coral);border-radius:16px 4px 16px 16px;}
+  .react{display:inline-flex;gap:4px;margin-top:5px;}
+  .react span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:2px 8px;font-size:11px;color:#ECE8F8;}
+  .react span.on{background:rgba(255,107,87,.25);border-color:var(--coral);color:#fff;}
+  .img-msg{width:150px;height:92px;border-radius:14px;background:linear-gradient(135deg,#5b4a8a,#8a6ad1);margin-top:2px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);}
+  .img-msg .ic{width:26px;height:26px;stroke-width:1.6;}
+  .chat-input{padding:12px 16px 22px;display:flex;gap:9px;align-items:center;background:linear-gradient(transparent,rgba(0,0,0,.25));}
+  .ci-btn{width:38px;height:38px;border-radius:50%;background:var(--night-card);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#B8B0CF;}
+  .ci-btn .ic{width:18px;height:18px;}
+  .ci-field{flex:1;background:var(--night-card);border-radius:999px;padding:11px 16px;font-size:13px;color:#9C93BC;}
+  .ci-send{width:38px;height:38px;border-radius:50%;background:var(--coral);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;box-shadow:0 4px 14px rgba(255,107,87,.5);}
+  .ci-send .ic{width:17px;height:17px;}
+
+  .note{margin-top:34px;background:#fff;border-radius:var(--radius-lg);padding:24px 26px;box-shadow:0 6px 24px rgba(59,48,55,.06);font-size:14px;line-height:1.8;}
+  .note b{color:var(--coral);}
+
+  /* ── PC 데스크톱 시안 ── */
+  .browser{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 24px 50px rgba(59,48,55,.15);margin-bottom:36px;}
+  .browser-bar{display:flex;align-items:center;gap:6px;padding:12px 16px;background:#F4EEE8;border-bottom:1px solid #E9E0D7;}
+  .tl{width:11px;height:11px;border-radius:50%;}
+  .url{flex:1;background:#fff;border-radius:8px;padding:7px 14px;font-size:12px;color:#A89E97;max-width:420px;margin:0 auto;text-align:center;}
+  .browser-scroll{overflow-x:auto;}
+  .pc-inner{min-width:880px;}
+
+  .pc-nav{display:flex;align-items:center;gap:18px;padding:16px 32px;background:var(--cream);}
+  .pc-brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:18px;letter-spacing:-.5px;}
+  .pc-brand span{color:var(--coral);}
+  .pc-search{flex:1;max-width:360px;display:flex;align-items:center;gap:9px;background:#fff;border-radius:999px;padding:10px 16px;color:#B9AFA8;font-size:13px;box-shadow:0 3px 10px rgba(59,48,55,.05);}
+  .pc-search .ic{width:15px;height:15px;}
+  .pc-nav .grow{flex:1;}
+  .pc-make{display:flex;align-items:center;gap:7px;background:var(--coral);color:#fff;font-weight:700;font-size:13px;padding:10px 18px;border-radius:999px;box-shadow:0 5px 14px rgba(255,107,87,.35);}
+  .pc-make .ic{width:15px;height:15px;stroke-width:2.5;}
+  .pc-hero{background:var(--cream);padding:20px 32px 4px;font-size:23px;font-weight:800;letter-spacing:-.5px;}
+  .pc-hero span{color:var(--coral);}
+  .pc-filters{background:var(--cream);padding:14px 32px 4px;display:flex;gap:8px;}
+  .pc-grid{background:var(--cream);display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:18px 32px 34px;}
+
+  .pc-chat{display:flex;height:540px;background:var(--night);color:#fff;}
+  .pc-side{width:248px;border-right:1px solid rgba(255,255,255,.08);padding:22px 18px;display:flex;flex-direction:column;}
+  .pc-room-title{font-size:16px;font-weight:800;letter-spacing:-.3px;line-height:1.4;}
+  .pc-room-sub{font-size:12px;color:#B8B0CF;margin-top:6px;display:flex;align-items:center;gap:6px;}
+  .pc-actions{display:flex;gap:8px;margin:16px 0 22px;}
+  .pc-act{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:var(--night-card);border-radius:12px;padding:9px 0;font-size:12px;font-weight:600;color:#D8D2EC;}
+  .pc-act .ic{width:14px;height:14px;}
+  .pc-side h5{font-size:12px;font-weight:700;color:#9C93BC;letter-spacing:.04em;margin-bottom:12px;}
+  .pp{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .pp svg{flex-shrink:0;}
+  .pp .pn{font-size:13px;font-weight:600;flex:1;}
+  .pp .host{font-size:10px;font-weight:700;color:var(--butter);background:rgba(255,214,107,.14);padding:2px 8px;border-radius:999px;}
+  .pp .addf{width:26px;height:26px;border-radius:50%;background:var(--night-card);display:flex;align-items:center;justify-content:center;color:#B8B0CF;}
+  .pp .addf .ic{width:13px;height:13px;}
+  .pc-main{flex:1;display:flex;flex-direction:column;min-width:0;}
+  .pc-main .sync{margin:16px 22px 4px;}
+  .pc-main .msgs{padding:14px 22px;}
+  .pc-main .chat-input{padding:12px 20px 18px;}
+  @media (max-width:760px){ .screens{gap:18px;} .phone{width:300px;height:630px;} }
+</style>
+</head>
+<body>
+
+<!-- ──────── 캐릭터 SVG 정의 (보돌이) ──────── -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <!-- body: 색만 바꿔 재사용 -->
+    <g id="bodol">
+      <!-- 안테나 -->
+      <line x1="38" y1="22" x2="28" y2="6" stroke="#3B3037" stroke-width="5" stroke-linecap="round"/>
+      <line x1="62" y1="22" x2="72" y2="6" stroke="#3B3037" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="27" cy="5" r="5" fill="#FFD66B"/>
+      <circle cx="73" cy="5" r="5" fill="#FFD66B"/>
+      <!-- 몸통 -->
+      <rect x="8" y="20" width="84" height="68" rx="22" class="body-fill"/>
+      <!-- 화면(얼굴) -->
+      <rect x="17" y="29" width="66" height="50" rx="15" fill="#FFF9F2"/>
+      <!-- 눈 -->
+      <circle cx="38" cy="50" r="4.5" fill="#3B3037"/>
+      <circle cx="62" cy="50" r="4.5" fill="#3B3037"/>
+      <!-- 볼터치 -->
+      <ellipse cx="30" cy="60" rx="5" ry="3.4" fill="#FFC4BA" opacity=".85"/>
+      <ellipse cx="70" cy="60" rx="5" ry="3.4" fill="#FFC4BA" opacity=".85"/>
+      <!-- 입 -->
+      <path d="M44 60 Q50 66 56 60" stroke="#3B3037" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+      <!-- 발 -->
+      <rect x="26" y="86" width="10" height="9" rx="5" class="body-fill"/>
+      <rect x="64" y="86" width="10" height="9" rx="5" class="body-fill"/>
+    </g>
+    <!-- 얼굴만 (아바타용) -->
+    <g id="bodol-face">
+      <circle cx="38" cy="48" r="5" fill="#3B3037"/>
+      <circle cx="62" cy="48" r="5" fill="#3B3037"/>
+      <ellipse cx="28" cy="60" rx="6" ry="4" fill="#FFFFFF" opacity=".55"/>
+      <ellipse cx="72" cy="60" rx="6" ry="4" fill="#FFFFFF" opacity=".55"/>
+      <path d="M43 60 Q50 67 57 60" stroke="#3B3037" stroke-width="4" fill="none" stroke-linecap="round"/>
+    </g>
+    <!-- 표정 베리에이션 -->
+    <g id="face-wink">
+      <circle cx="38" cy="48" r="5" fill="#3B3037"/>
+      <path d="M55 48 Q62 43 69 48" stroke="#3B3037" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <ellipse cx="28" cy="60" rx="6" ry="4" fill="#FFFFFF" opacity=".55"/>
+      <ellipse cx="72" cy="60" rx="6" ry="4" fill="#FFFFFF" opacity=".55"/>
+      <path d="M43 60 Q50 67 57 60" stroke="#3B3037" stroke-width="4" fill="none" stroke-linecap="round"/>
+    </g>
+    <g id="face-cry">
+      <path d="M32 49 Q38 44 44 49" stroke="#3B3037" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M56 49 Q62 44 68 49" stroke="#3B3037" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <ellipse cx="36" cy="58" rx="3.2" ry="5" fill="#8FD2FF"/>
+      <ellipse cx="64" cy="58" rx="3.2" ry="5" fill="#8FD2FF"/>
+      <path d="M43 67 Q50 61 57 67" stroke="#3B3037" stroke-width="4" fill="none" stroke-linecap="round"/>
+    </g>
+    <g id="face-angry">
+      <line x1="30" y1="40" x2="43" y2="44" stroke="#3B3037" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="70" y1="40" x2="57" y2="44" stroke="#3B3037" stroke-width="3.5" stroke-linecap="round"/>
+      <circle cx="38" cy="51" r="4.6" fill="#3B3037"/>
+      <circle cx="62" cy="51" r="4.6" fill="#3B3037"/>
+      <path d="M43 66 Q50 61 57 66" stroke="#3B3037" stroke-width="4" fill="none" stroke-linecap="round"/>
+    </g>
+    <g id="face-heart">
+      <path d="M38 54 C32 49 30 44 34 41.5 C36.5 40 38 42.5 38 44 C38 42.5 39.5 40 42 41.5 C46 44 44 49 38 54 Z" fill="#FF4D6D"/>
+      <path d="M62 54 C56 49 54 44 58 41.5 C60.5 40 62 42.5 62 44 C62 42.5 63.5 40 66 41.5 C70 44 68 49 62 54 Z" fill="#FF4D6D"/>
+      <path d="M42 60 Q50 69 58 60" stroke="#3B3037" stroke-width="4" fill="none" stroke-linecap="round"/>
+    </g>
+    <g id="face-surprise">
+      <circle cx="38" cy="48" r="5.5" fill="#3B3037"/>
+      <circle cx="62" cy="48" r="5.5" fill="#3B3037"/>
+      <ellipse cx="28" cy="59" rx="6" ry="4" fill="#FFFFFF" opacity=".55"/>
+      <ellipse cx="72" cy="59" rx="6" ry="4" fill="#FFFFFF" opacity=".55"/>
+      <ellipse cx="50" cy="64" rx="5" ry="6.5" fill="#3B3037"/>
+    </g>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+  <header class="doc-header">
+    <div class="logo">
+      <svg width="44" height="44" viewBox="0 0 100 100"><use href="#bodol" style="--c:var(--coral)"/><style>svg .body-fill{fill:#FF6B57}</style></svg>
+      같이볼래<span class="dot">?</span>
+    </div>
+    <p>혼자 보는 드라마, 같이 보는 기분 — 동시시청 채팅 서비스</p>
+    <span class="tag">화면 디자인 시안 v2 · 캐릭터 적용 · Pretendard</span>
+  </header>
+
+  <!-- ───────── 디자인 시스템 ───────── -->
+  <div class="section-title">디자인 시스템</div>
+  <div class="ds-grid">
+
+    <div class="ds-card">
+      <h4>MASCOT · 보돌이</h4>
+      <div class="mascot-card">
+        <svg width="92" height="92" viewBox="0 0 100 100"><use href="#bodol"/></svg>
+        <div class="desc">
+          <b>"같이 보돌이"</b>
+          말랑한 TV 모양 캐릭터.<br>로고·로딩·빈 화면·아바타에<br>일관되게 사용해요.
+        </div>
+      </div>
+      <div class="ava-variants">
+        <svg width="36" height="36" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#FF8A77"/><use href="#bodol-face"/></svg>
+        <svg width="36" height="36" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#FF8A77"/><use href="#face-wink"/></svg>
+        <svg width="36" height="36" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#FF8A77"/><use href="#face-cry"/></svg>
+        <svg width="36" height="36" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#FF8A77"/><use href="#face-angry"/></svg>
+        <svg width="36" height="36" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#FF8A77"/><use href="#face-heart"/></svg>
+        <svg width="36" height="36" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#FF8A77"/><use href="#face-surprise"/></svg>
+      </div>
+      <div style="font-size:11px;color:var(--ink-soft);margin:8px 0 6px;font-weight:600">표정 6종 × 컬러 5종 = 30가지 조합</div>
+      <div class="ava-variants">
+        <svg width="36" height="36" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#FF8A77"/><use href="#face-wink"/></svg>
+        <svg width="36" height="36" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#9B8CFF"/><use href="#face-wink"/></svg>
+        <svg width="36" height="36" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#FFD66B"/><use href="#face-wink"/></svg>
+        <svg width="36" height="36" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#5ED5B8"/><use href="#face-wink"/></svg>
+        <svg width="36" height="36" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#7FB5FF"/><use href="#face-wink"/></svg>
+      </div>
+    </div>
+
+    <div class="ds-card">
+      <h4>COLOR PALETTE</h4>
+      <div class="swatches">
+        <div class="sw"><div class="chip" style="background:var(--coral)"></div><b>코랄</b><small>#FF6B57<br>메인</small></div>
+        <div class="sw"><div class="chip" style="background:var(--lavender)"></div><b>라벤더</b><small>#9B8CFF<br>보조</small></div>
+        <div class="sw"><div class="chip" style="background:var(--butter)"></div><b>버터</b><small>#FFD66B<br>강조</small></div>
+        <div class="sw"><div class="chip" style="background:var(--cream)"></div><b>크림</b><small>#FFF6EE<br>배경</small></div>
+        <div class="sw"><div class="chip" style="background:var(--night)"></div><b>나이트</b><small>#241F33<br>극장모드</small></div>
+      </div>
+    </div>
+
+    <div class="ds-card">
+      <h4>TYPOGRAPHY · Pretendard</h4>
+      <div class="type-row"><span class="label">H1 / 800</span><span style="font-size:24px;font-weight:800;letter-spacing:-.5px">같이볼래?</span></div>
+      <div class="type-row"><span class="label">H2 / 700</span><span style="font-size:17px;font-weight:700">채팅방 제목</span></div>
+      <div class="type-row"><span class="label">Body / 400</span><span style="font-size:14px">본문은 편안하게 읽혀요</span></div>
+      <div class="type-row"><span class="label">Caption / 500</span><span style="font-size:12px;color:var(--ink-soft)">시간 · 인원 같은 보조 정보</span></div>
+    </div>
+
+  </div>
+
+  <!-- ───────── 화면 시안 ───────── -->
+  <div class="section-title">주요 화면 (좌우로 스크롤)</div>
+  <div class="screens">
+
+    <!-- 1. 로그인 -->
+    <div class="screen-col">
+      <div class="screen-label">① 로그인<small>구글 · 카카오 (자동 회원가입)</small></div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="login">
+          <svg width="150" height="150" viewBox="0 0 100 100"><use href="#bodol"/></svg>
+          <h1>같이볼래<span>?</span></h1>
+          <p class="sub">혼자 보는 드라마,<br>오늘부터 같이 보는 기분</p>
+          <button class="sso kakao"><span class="mark" style="background:#3B1E1E;color:#FEE500">K</span> 카카오로 3초만에 시작</button>
+          <button class="sso google"><span class="mark" style="background:#fff;border:1px solid #eee;color:#4285F4">G</span> Google로 시작하기</button>
+          <p class="terms">시작하면 이용약관과 개인정보처리방침에<br>동의하는 것으로 간주돼요</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 프로필 설정 -->
+    <div class="screen-col">
+      <div class="screen-label">② 닉네임 & 아바타 설정<small>표정 + 컬러 조합으로 내 보돌이 만들기</small></div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="profile">
+          <svg class="ic back-ic" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          <h2>드라마 친구들에게<br><span>어떻게 보일까요?</span></h2>
+          <p class="desc">표정과 컬러를 골라 내 보돌이를 만들어요</p>
+          <div class="avatar-pick">
+            <div class="avatar-big">
+              <svg width="72" height="72" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#9B8CFF"/><use href="#face-wink"/></svg>
+            </div>
+          </div>
+          <div class="color-label">표정</div>
+          <div class="expr-grid">
+            <div class="edot"><svg width="34" height="34" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#9B8CFF"/><use href="#bodol-face"/></svg></div>
+            <div class="edot sel"><svg width="34" height="34" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#9B8CFF"/><use href="#face-wink"/></svg></div>
+            <div class="edot"><svg width="34" height="34" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#9B8CFF"/><use href="#face-cry"/></svg></div>
+            <div class="edot"><svg width="34" height="34" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#9B8CFF"/><use href="#face-angry"/></svg></div>
+            <div class="edot"><svg width="34" height="34" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#9B8CFF"/><use href="#face-heart"/></svg></div>
+            <div class="edot"><svg width="34" height="34" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#9B8CFF"/><use href="#face-surprise"/></svg></div>
+          </div>
+          <div class="color-label">컬러</div>
+          <div class="color-grid">
+            <div class="cdot"><svg width="34" height="34" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#FF8A77"/><use href="#face-wink"/></svg></div>
+            <div class="cdot sel"><svg width="34" height="34" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#9B8CFF"/><use href="#face-wink"/></svg></div>
+            <div class="cdot"><svg width="34" height="34" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#FFD66B"/><use href="#face-wink"/></svg></div>
+            <div class="cdot"><svg width="34" height="34" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#5ED5B8"/><use href="#face-wink"/></svg></div>
+            <div class="cdot"><svg width="34" height="34" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#7FB5FF"/><use href="#face-wink"/></svg></div>
+          </div>
+          <div class="input-label">닉네임</div>
+          <div class="input">밤샘여우 <span class="count">4/10</span></div>
+          <button class="cta">시작하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 채팅방 리스트 -->
+    <div class="screen-col">
+      <div class="screen-label">③ 채팅방 리스트 & 검색<small>드라마 + 시청시간 기준 자동 제목</small></div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="list">
+          <div class="list-head">
+            <div class="hi">오늘 뭐 <span>같이 볼래?</span></div>
+            <svg width="38" height="38" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#9B8CFF"/><use href="#bodol-face"/></svg>
+          </div>
+          <div class="search">
+            <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            드라마 제목으로 검색
+          </div>
+          <div class="filters">
+            <span class="f on">전체</span><span class="f">상영중</span><span class="f">오늘 밤</span><span class="f">친구방</span>
+          </div>
+          <div class="room-scroll">
+            <div class="room">
+              <div class="poster" style="background:var(--coral-soft);color:var(--coral)">선</div>
+              <div class="info">
+                <div class="title">선재 업고 튀어 5화</div>
+                <div class="meta">오늘 22:00 · 1화부터 정주행</div>
+                <div class="row2"><span class="bd live"><span class="d"></span>상영중</span><span class="ppl">12명 시청중</span></div>
+              </div>
+            </div>
+            <div class="room">
+              <div class="poster" style="background:var(--lavender-soft);color:var(--lavender)">시</div>
+              <div class="info">
+                <div class="title">시그널 8화 다시보기</div>
+                <div class="meta">오늘 23:00 · 명장면 위주</div>
+                <div class="row2"><span class="bd soon"><span class="d"></span>곧 시작</span><span class="ppl">5명 대기</span></div>
+              </div>
+            </div>
+            <div class="room">
+              <div class="poster" style="background:#FFF3D4;color:#C8902A">폭</div>
+              <div class="info">
+                <div class="title">폭군의 셰프 3화</div>
+                <div class="meta">내일 21:30 · 스포 금지방</div>
+                <div class="row2"><span class="bd soon"><span class="d"></span>곧 시작</span><span class="ppl">8명 대기</span></div>
+              </div>
+            </div>
+            <div class="room">
+              <div class="poster" style="background:#E2F6EF;color:#3BAA8C">킹</div>
+              <div class="info">
+                <div class="title">킹덤 시즌1 정주행</div>
+                <div class="meta">토요일 20:00 · 맥주 필수</div>
+                <div class="row2"><span class="bd end"><span class="d"></span>종료</span><span class="ppl">24명 참여했음</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="fab"><svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. 채팅방 -->
+    <div class="screen-col">
+      <div class="screen-label">④ 채팅방 — 극장 모드<small>동시시청 타이머 · 공감 반응 · 이미지 첨부</small></div>
+      <div class="phone dark">
+        <div class="notch"></div>
+        <div class="chat">
+          <div class="chat-head">
+            <div class="rt">
+              <svg class="ic" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+              <span class="name">선재 업고 튀어 5화 · 오늘 22:00</span>
+              <svg class="ic" viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.5.5l3-3a5 5 0 00-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 00-7.5-.5l-3 3a5 5 0 007 7l1.7-1.7"/></svg>
+              <svg class="ic" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.9M16 3.1a4 4 0 010 7.8"/></svg>
+            </div>
+            <div class="sub2"><span class="live-dot"></span> 12명이 같이 보는 중 · 스포 OK 방</div>
+          </div>
+          <div class="sync">
+            <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            <span class="t">다 같이 재생 위치 맞추는 중</span><span class="time">23:41</span>
+          </div>
+          <div class="msgs">
+            <div class="msg">
+              <svg class="a" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#FF8A77"/><use href="#bodol-face"/></svg>
+              <div>
+                <div class="nick">새벽토끼</div>
+                <div class="bubble">아니 지금 눈빛 봤어?? 미쳤다 진짜</div>
+                <div class="react"><span class="on">❤️ 4</span><span>😂 2</span></div>
+              </div>
+            </div>
+            <div class="msg">
+              <svg class="a" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#FFD66B"/><use href="#bodol-face"/></svg>
+              <div>
+                <div class="nick">곰돌무비</div>
+                <div class="img-msg">
+                  <svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+                </div>
+                <div class="react"><span class="on">😭 6</span></div>
+              </div>
+            </div>
+            <div class="msg me">
+              <svg class="a" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#9B8CFF"/><use href="#bodol-face"/></svg>
+              <div>
+                <div class="bubble">이 장면 보려고 일주일 버텼다…</div>
+              </div>
+            </div>
+            <div class="msg">
+              <svg class="a" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#5ED5B8"/><use href="#bodol-face"/></svg>
+              <div>
+                <div class="nick">펭하드라마</div>
+                <div class="bubble">잠깐 다들 23:50 가면 숨 참아</div>
+                <div class="react"><span>😂 3</span><span>🔥 1</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="chat-input">
+            <div class="ci-btn"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div>
+            <div class="ci-field">같이 떠들어요…</div>
+            <div class="ci-btn"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+            <div class="ci-send"><svg class="ic" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ───────── PC 데스크톱 시안 ───────── -->
+  <div class="section-title">PC 화면 (데스크톱)</div>
+
+  <!-- PC 1. 채팅방 리스트 -->
+  <div class="browser">
+    <div class="browser-bar">
+      <span class="tl" style="background:#FF6157"></span><span class="tl" style="background:#FFBD2E"></span><span class="tl" style="background:#28C840"></span>
+      <div class="url">gachibollae.app</div>
+    </div>
+    <div class="browser-scroll"><div class="pc-inner">
+      <div class="pc-nav">
+        <div class="pc-brand">
+          <svg width="32" height="32" viewBox="0 0 100 100"><use href="#bodol"/></svg>
+          같이볼래<span>?</span>
+        </div>
+        <div class="pc-search">
+          <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          드라마 제목으로 검색
+        </div>
+        <div class="grow"></div>
+        <div class="pc-make"><svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>방 만들기</div>
+        <svg width="36" height="36" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#9B8CFF"/><use href="#bodol-face"/></svg>
+      </div>
+      <div class="pc-hero">오늘 뭐 <span>같이 볼래?</span></div>
+      <div class="pc-filters">
+        <span class="f on">전체</span><span class="f">상영중</span><span class="f">오늘 밤</span><span class="f">친구방</span>
+      </div>
+      <div class="pc-grid">
+        <div class="room">
+          <div class="poster" style="background:var(--coral-soft);color:var(--coral)">선</div>
+          <div class="info">
+            <div class="title">선재 업고 튀어 5화</div>
+            <div class="meta">오늘 22:00 · 정주행</div>
+            <div class="row2"><span class="bd live"><span class="d"></span>상영중</span><span class="ppl">12명</span></div>
+          </div>
+        </div>
+        <div class="room">
+          <div class="poster" style="background:var(--lavender-soft);color:var(--lavender)">시</div>
+          <div class="info">
+            <div class="title">시그널 8화 다시보기</div>
+            <div class="meta">오늘 23:00 · 명장면</div>
+            <div class="row2"><span class="bd soon"><span class="d"></span>곧 시작</span><span class="ppl">5명</span></div>
+          </div>
+        </div>
+        <div class="room">
+          <div class="poster" style="background:#FFF3D4;color:#C8902A">폭</div>
+          <div class="info">
+            <div class="title">폭군의 셰프 3화</div>
+            <div class="meta">내일 21:30 · 스포금지</div>
+            <div class="row2"><span class="bd soon"><span class="d"></span>곧 시작</span><span class="ppl">8명</span></div>
+          </div>
+        </div>
+        <div class="room">
+          <div class="poster" style="background:#E2F6EF;color:#3BAA8C">킹</div>
+          <div class="info">
+            <div class="title">킹덤 시즌1 정주행</div>
+            <div class="meta">토요일 20:00</div>
+            <div class="row2"><span class="bd end"><span class="d"></span>종료</span><span class="ppl">24명</span></div>
+          </div>
+        </div>
+        <div class="room">
+          <div class="poster" style="background:#EAF1FF;color:#5B8DEF">무</div>
+          <div class="info">
+            <div class="title">무빙 11화</div>
+            <div class="meta">금요일 22:30</div>
+            <div class="row2"><span class="bd soon"><span class="d"></span>곧 시작</span><span class="ppl">17명 대기</span></div>
+          </div>
+        </div>
+        <div class="room">
+          <div class="poster" style="background:#FBEAF3;color:#D464A6">눈</div>
+          <div class="info">
+            <div class="title">눈물의 여왕 9화</div>
+            <div class="meta">일요일 21:00</div>
+            <div class="row2"><span class="bd soon"><span class="d"></span>곧 시작</span><span class="ppl">9명 대기</span></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- PC 2. 채팅방 (극장모드) -->
+  <div class="browser">
+    <div class="browser-bar">
+      <span class="tl" style="background:#FF6157"></span><span class="tl" style="background:#FFBD2E"></span><span class="tl" style="background:#28C840"></span>
+      <div class="url">gachibollae.app/room/sunjae-ep5</div>
+    </div>
+    <div class="browser-scroll"><div class="pc-inner">
+      <div class="pc-chat">
+        <div class="pc-side">
+          <div class="pc-room-title">선재 업고 튀어 5화<br>오늘 22:00</div>
+          <div class="pc-room-sub"><span class="live-dot"></span>12명이 같이 보는 중 · 스포 OK</div>
+          <div class="pc-actions">
+            <div class="pc-act"><svg class="ic" viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.5.5l3-3a5 5 0 00-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 00-7.5-.5l-3 3a5 5 0 007 7l1.7-1.7"/></svg>링크 공유</div>
+            <div class="pc-act"><svg class="ic" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>친구 초대</div>
+          </div>
+          <h5>참여자 12</h5>
+          <div class="pp">
+            <svg width="30" height="30" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#FF8A77"/><use href="#bodol-face"/></svg>
+            <span class="pn">새벽토끼</span><span class="host">방장</span>
+          </div>
+          <div class="pp">
+            <svg width="30" height="30" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#9B8CFF"/><use href="#bodol-face"/></svg>
+            <span class="pn">밤샘여우 (나)</span>
+          </div>
+          <div class="pp">
+            <svg width="30" height="30" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#FFD66B"/><use href="#bodol-face"/></svg>
+            <span class="pn">곰돌무비</span>
+            <span class="addf"><svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+          </div>
+          <div class="pp">
+            <svg width="30" height="30" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#5ED5B8"/><use href="#bodol-face"/></svg>
+            <span class="pn">펭하드라마</span>
+            <span class="addf"><svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+          </div>
+          <div class="pp">
+            <svg width="30" height="30" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#7FB5FF"/><use href="#bodol-face"/></svg>
+            <span class="pn">주말순삭</span>
+            <span class="addf"><svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+          </div>
+        </div>
+        <div class="pc-main">
+          <div class="sync">
+            <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            <span class="t">다 같이 재생 위치 맞추는 중</span><span class="time">23:41</span>
+          </div>
+          <div class="msgs">
+            <div class="msg">
+              <svg class="a" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#FF8A77"/><use href="#bodol-face"/></svg>
+              <div>
+                <div class="nick">새벽토끼</div>
+                <div class="bubble">아니 지금 눈빛 봤어?? 미쳤다 진짜</div>
+                <div class="react"><span class="on">❤️ 4</span><span>😂 2</span></div>
+              </div>
+            </div>
+            <div class="msg">
+              <svg class="a" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#FFD66B"/><use href="#bodol-face"/></svg>
+              <div>
+                <div class="nick">곰돌무비</div>
+                <div class="img-msg">
+                  <svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+                </div>
+                <div class="react"><span class="on">😭 6</span></div>
+              </div>
+            </div>
+            <div class="msg me">
+              <svg class="a" viewBox="0 0 100 100"><circle cx="50" cy="52" r="46" fill="#9B8CFF"/><use href="#bodol-face"/></svg>
+              <div>
+                <div class="bubble">이 장면 보려고 일주일 버텼다…</div>
+              </div>
+            </div>
+          </div>
+          <div class="chat-input">
+            <div class="ci-btn"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div>
+            <div class="ci-field">같이 떠들어요…</div>
+            <div class="ci-btn"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+            <div class="ci-send"><svg class="ic" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- ───────── 디자인 노트 ───────── -->
+  <div class="note">
+    <b>v2 변경사항</b><br>
+    · 흩어져 있던 이모지 아이콘 전부 제거 → <b>심플한 라인 아이콘</b>으로 교체 (검색·카메라·전송·공유·친구 등)<br>
+    · 대표 캐릭터 <b>"보돌이"</b> 신규 제작 — 말랑한 TV 캐릭터, 로고·로그인·아바타에만 절제해서 사용<br>
+    · 아바타: 이모지 동물 → 보돌이 얼굴 + 컬러 베리에이션 5종 (코랄/라벤더/버터/민트/스카이)<br>
+    · 공감 반응(❤️😂😭)은 채팅의 핵심 기능이라 유지 — 사용자가 직접 보내는 이모지는 UI 장식이 아니에요
+  </div>
+
+</div>
+</body>
+</html>
