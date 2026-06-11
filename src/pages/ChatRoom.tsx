@@ -1,14 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ChevronLeft, Users, Clock, Camera, Send, Share2, X } from 'lucide-react'
+import { ChevronLeft, Users, Clock, Camera, Send, Share2, X, SmilePlus } from 'lucide-react'
 import { useAuth } from '@/lib/auth'
 import { getRoom } from '@/lib/rooms'
 import type { Room } from '@/lib/database.types'
 import { computeStatus, formatRoomTime, formatSyncTime } from '@/lib/roomStatus'
 import { useRoomChannel, type ChatUser } from '@/hooks/useRoomChannel'
+import { uploadChatImage, ImageUploadError } from '@/lib/storage'
 import { BodolAvatar, Bodol } from '@/components/mascot'
 import { LoadingScreen } from '@/components/ui'
 import styles from './ChatRoom.module.css'
+
+/** 공감 반응 이모지 (스펙 §3.3) */
+const REACTION_EMOJIS = ['❤️', '😂', '😭', '🔥'] as const
 
 export function ChatRoom() {
   const { id } = useParams<{ id: string }>()
@@ -21,8 +25,12 @@ export function ChatRoom() {
   const [input, setInput] = useState('')
   const [showMembers, setShowMembers] = useState(false)
   const [now, setNow] = useState(() => Date.now())
+  const [uploading, setUploading] = useState(false)
+  const [toast, setToast] = useState<string | null>(null)
+  const [reactFor, setReactFor] = useState<string | null>(null)
 
   const msgEndRef = useRef<HTMLDivElement>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
 
   // 내 정보 (채널 track용) — 프로필 바뀌지 않는 한 ref 안정
   const me = useMemo<ChatUser | null>(() => {
@@ -35,7 +43,8 @@ export function ChatRoom() {
     }
   }, [user, profile])
 
-  const { messages, members, status, sendMessage } = useRoomChannel(id, me)
+  const { messages, members, reactions, status, sendMessage, sendImage, toggleReaction } =
+    useRoomChannel(id, me)
 
   // 방 정보 로드
   useEffect(() => {
@@ -57,6 +66,35 @@ export function ChatRoom() {
   useEffect(() => {
     msgEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages.length])
+
+  // 토스트 자동 사라짐
+  useEffect(() => {
+    if (!toast) return
+    const t = setTimeout(() => setToast(null), 2600)
+    return () => clearTimeout(t)
+  }, [toast])
+
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = '' // 같은 파일 재선택 허용
+    if (!file || !id) return
+    setUploading(true)
+    try {
+      const url = await uploadChatImage(id, file)
+      sendImage(url)
+    } catch (err) {
+      setToast(
+        err instanceof ImageUploadError ? err.message : '이미지 업로드에 실패했어요.',
+      )
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  function handleReact(messageId: string, emoji: string) {
+    toggleReaction(messageId, emoji)
+    setReactFor(null)
+  }
 
   if (loading) return <LoadingScreen message="채팅방 입장 중…" />
 
@@ -141,6 +179,8 @@ export function ChatRoom() {
         ) : (
           messages.map((m) => {
             const mine = m.user.user_id === me?.user_id
+            const rx = reactions[m.id] ?? {}
+            const activeEmojis = REACTION_EMOJIS.filter((e) => (rx[e]?.length ?? 0) > 0)
             return (
               <div key={m.id} className={`${styles.msg} ${mine ? styles.me : ''}`}>
                 <BodolAvatar
@@ -151,7 +191,56 @@ export function ChatRoom() {
                 />
                 <div className={styles.msgBody}>
                   {!mine && <div className={styles.nick}>{m.user.nickname}</div>}
-                  {m.text && <div className={styles.bubble}>{m.text}</div>}
+                  <div className={styles.bubbleRow}>
+                    {m.text && <div className={styles.bubble}>{m.text}</div>}
+                    {m.image_url && (
+                      <a href={m.image_url} target="_blank" rel="noreferrer">
+                        <img
+                          src={m.image_url}
+                          alt="첨부 이미지"
+                          className={styles.imgMsg}
+                          loading="lazy"
+                        />
+                      </a>
+                    )}
+                    <button
+                      className={styles.reactTrigger}
+                      onClick={() => setReactFor(reactFor === m.id ? null : m.id)}
+                      aria-label="공감 반응 추가"
+                    >
+                      <SmilePlus size={15} />
+                    </button>
+                    {reactFor === m.id && (
+                      <div className={styles.palette}>
+                        {REACTION_EMOJIS.map((e) => (
+                          <button
+                            key={e}
+                            className={styles.paletteEmoji}
+                            onClick={() => handleReact(m.id, e)}
+                          >
+                            {e}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  {activeEmojis.length > 0 && (
+                    <div className={styles.reactChips}>
+                      {activeEmojis.map((e) => {
+                        const users = rx[e] ?? []
+                        const on = me ? users.includes(me.user_id) : false
+                        return (
+                          <button
+                            key={e}
+                            className={`${styles.chip} ${on ? styles.chipOn : ''}`}
+                            onClick={() => toggleReaction(m.id, e)}
+                          >
+                            {e} {users.length}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
             )
@@ -160,12 +249,22 @@ export function ChatRoom() {
         <div ref={msgEndRef} />
       </div>
 
+      {toast && <div className={styles.toast}>{toast}</div>}
+
       {/* 입력 */}
       <div className={styles.inputBar}>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/png,image/jpeg,image/webp,image/gif"
+          hidden
+          onChange={handleFile}
+        />
         <button
           className={styles.ciBtn}
-          disabled
-          title="이미지 첨부는 M5에서 지원돼요"
+          onClick={() => fileRef.current?.click()}
+          disabled={status !== 'joined' || uploading}
+          title="이미지 첨부 (최대 5MB)"
           aria-label="이미지 첨부"
         >
           <Camera size={18} />
@@ -177,7 +276,7 @@ export function ChatRoom() {
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.nativeEvent.isComposing) handleSend()
           }}
-          placeholder="같이 떠들어요…"
+          placeholder={uploading ? '이미지 올리는 중…' : '같이 떠들어요…'}
           disabled={status !== 'joined'}
         />
         <button

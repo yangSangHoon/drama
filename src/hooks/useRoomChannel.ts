@@ -23,11 +23,17 @@ export type PresenceMember = ChatUser
 
 export type ChannelStatus = 'connecting' | 'joined' | 'error'
 
+/** 메시지별 공감 반응: { [messageId]: { [emoji]: userId[] } } */
+export type ReactionMap = Record<string, Record<string, string[]>>
+
 export interface RoomChannel {
   messages: ChatMessage[]
   members: PresenceMember[]
+  reactions: ReactionMap
   status: ChannelStatus
   sendMessage: (text: string) => void
+  sendImage: (imageUrl: string) => void
+  toggleReaction: (messageId: string, emoji: string) => void
 }
 
 /**
@@ -39,6 +45,7 @@ export interface RoomChannel {
 export function useRoomChannel(roomId: string | undefined, me: ChatUser | null): RoomChannel {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [members, setMembers] = useState<PresenceMember[]>([])
+  const [reactions, setReactions] = useState<ReactionMap>({})
   const [status, setStatus] = useState<ChannelStatus>('connecting')
   const channelRef = useRef<RealtimeChannel | null>(null)
 
@@ -47,6 +54,7 @@ export function useRoomChannel(roomId: string | undefined, me: ChatUser | null):
 
     setStatus('connecting')
     setMessages([])
+    setReactions({})
 
     const channel = supabase.channel(`room:${roomId}`, {
       config: {
@@ -58,6 +66,23 @@ export function useRoomChannel(roomId: string | undefined, me: ChatUser | null):
 
     channel.on('broadcast', { event: 'message' }, ({ payload }) => {
       setMessages((prev) => [...prev, payload as ChatMessage])
+    })
+
+    // 공감 반응: 각 이벤트는 (message_id, emoji, user_id) 토글
+    channel.on('broadcast', { event: 'reaction' }, ({ payload }) => {
+      const { message_id, emoji, user_id } = payload as {
+        message_id: string
+        emoji: string
+        user_id: string
+      }
+      setReactions((prev) => {
+        const forMsg = { ...(prev[message_id] ?? {}) }
+        const users = new Set(forMsg[emoji] ?? [])
+        if (users.has(user_id)) users.delete(user_id)
+        else users.add(user_id)
+        forMsg[emoji] = [...users]
+        return { ...prev, [message_id]: forMsg }
+      })
     })
 
     channel.on('presence', { event: 'sync' }, () => {
@@ -101,5 +126,33 @@ export function useRoomChannel(roomId: string | undefined, me: ChatUser | null):
     [me],
   )
 
-  return { messages, members, status, sendMessage }
+  const sendImage = useCallback(
+    (imageUrl: string) => {
+      const channel = channelRef.current
+      if (!channel || !me) return
+      const msg: ChatMessage = {
+        id: crypto.randomUUID(),
+        user: me,
+        image_url: imageUrl,
+        ts: Date.now(),
+      }
+      channel.send({ type: 'broadcast', event: 'message', payload: msg })
+    },
+    [me],
+  )
+
+  const toggleReaction = useCallback(
+    (messageId: string, emoji: string) => {
+      const channel = channelRef.current
+      if (!channel || !me) return
+      channel.send({
+        type: 'broadcast',
+        event: 'reaction',
+        payload: { message_id: messageId, emoji, user_id: me.user_id },
+      })
+    },
+    [me],
+  )
+
+  return { messages, members, reactions, status, sendMessage, sendImage, toggleReaction }
 }
