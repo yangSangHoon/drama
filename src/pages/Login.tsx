@@ -41,6 +41,7 @@ export function Login() {
         {pending === 'kakao' ? '카카오 연결 중…' : '카카오로 3초만에 시작'}
       </button>
 
+      {/* Google 로그인: Provider 셋업 후 아래 주석 해제
       <button
         className={`${styles.sso} ${styles.google}`}
         onClick={() => handleSignIn('google')}
@@ -49,6 +50,7 @@ export function Login() {
         <span className={styles.markGoogle}>G</span>
         {pending === 'google' ? 'Google 연결 중…' : 'Google로 시작하기'}
       </button>
+      */}
 
       {error ? <p className={styles.error}>{error}</p> : null}
 
