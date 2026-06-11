@@ -1,0 +1,6 @@
+export { Bodol } from './Bodol'
+export type { BodolProps } from './Bodol'
+export { BodolAvatar } from './BodolAvatar'
+export type { BodolAvatarProps } from './BodolAvatar'
+export { BodolFace } from './BodolFace'
+export * from './types'
