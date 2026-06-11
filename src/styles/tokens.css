@@ -1,0 +1,48 @@
+/* ──────────────────────────────────────────────
+   같이볼래? 디자인 토큰
+   (watch-together-design.html 시안 기준)
+   ────────────────────────────────────────────── */
+:root {
+  /* ── 컬러: 라이트(기본) ── */
+  --cream: #fff6ee; /* 기본 배경 */
+  --coral: #ff6b57; /* 메인 포인트 (버튼, 강조) */
+  --coral-soft: #ffe3dd;
+  --lavender: #9b8cff; /* 보조 포인트 */
+  --lavender-soft: #eeebff;
+  --butter: #ffd66b; /* 뱃지, 타이머 강조 */
+  --mint: #5ed5b8;
+  --sky: #7fb5ff;
+
+  --ink: #3b3037; /* 본문 텍스트 */
+  --ink-soft: #8a7f86; /* 보조 텍스트 */
+
+  /* ── 컬러: 다크(극장모드) ── */
+  --night: #241f33; /* 채팅방 배경 */
+  --night-card: #3e3663; /* 극장모드 말풍선/카드 */
+
+  --white: #ffffff;
+  --page-bg: #f3ede6; /* 디자인 문서/외곽 배경 */
+
+  /* ── 보돌이 아바타 컬러 5종 ── */
+  --avatar-coral: #ff8a77;
+  --avatar-lavender: #9b8cff;
+  --avatar-butter: #ffd66b;
+  --avatar-mint: #5ed5b8;
+  --avatar-sky: #7fb5ff;
+
+  /* ── 라운드 ── */
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+
+  /* ── 그림자 ── */
+  --shadow-card: 0 6px 24px rgba(59, 48, 55, 0.06);
+  --shadow-room: 0 5px 16px rgba(59, 48, 55, 0.06);
+  --shadow-coral: 0 8px 20px rgba(255, 107, 87, 0.35);
+  --shadow-pop: 0 24px 50px rgba(59, 48, 55, 0.18);
+
+  /* ── 폰트 ── */
+  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
+    'Noto Sans KR', sans-serif;
+}

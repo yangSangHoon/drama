@@ -1,0 +1,111 @@
+.page {
+  min-height: 100dvh;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 20px 22px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.back {
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+}
+.header h1 {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.preview {
+  background: var(--coral-soft);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+}
+.previewLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--coral);
+  margin-bottom: 4px;
+  letter-spacing: 0.02em;
+}
+.previewTitle {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.3px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.label {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 2px solid #f0e6de;
+  background: #fff;
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.input:focus,
+.textarea:focus {
+  border-color: var(--coral);
+}
+.textarea {
+  resize: vertical;
+  min-height: 56px;
+  line-height: 1.5;
+}
+.input::placeholder,
+.textarea::placeholder {
+  color: #c9bfb8;
+}
+
+.toggleRow {
+  display: flex;
+  gap: 8px;
+}
+.toggle {
+  flex: 1;
+  padding: 12px;
+  border-radius: 14px;
+  border: 2px solid #f0e6de;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  transition: all 0.12s ease;
+}
+.toggleOn {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+
+.error {
+  color: var(--coral);
+  font-size: 13px;
+}
+
+.footer {
+  margin-top: auto;
+  padding-top: 8px;
+}

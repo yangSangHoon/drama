@@ -1,0 +1,64 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  transition:
+    transform 0.08s ease,
+    filter 0.15s ease,
+    background 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── 크기 ── */
+.md {
+  padding: 11px 18px;
+  font-size: 14px;
+}
+.lg {
+  padding: 16px 22px;
+  font-size: 16px;
+  border-radius: 18px;
+}
+
+.block {
+  width: 100%;
+}
+
+/* ── 변형 ── */
+.primary {
+  background: var(--coral);
+  color: #fff;
+  box-shadow: var(--shadow-coral);
+}
+.primary:hover:not(:disabled) {
+  filter: brightness(1.04);
+}
+
+.secondary {
+  background: #fff;
+  color: var(--ink);
+  border: 1.5px solid #ede4dc;
+}
+.secondary:hover:not(:disabled) {
+  background: var(--cream);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--ink-soft);
+}
+.ghost:hover:not(:disabled) {
+  background: rgba(59, 48, 55, 0.05);
+}
