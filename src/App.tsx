@@ -5,7 +5,7 @@ import { Login } from '@/pages/Login'
 import { ProfileSetup } from '@/pages/ProfileSetup'
 import { RoomList } from '@/pages/RoomList'
 import { CreateRoom } from '@/pages/CreateRoom'
-import { RoomPlaceholder } from '@/pages/RoomPlaceholder'
+import { ChatRoom } from '@/pages/ChatRoom'
 import { DesignSystem } from '@/pages/DesignSystem'
 import type { ReactElement } from 'react'
 
@@ -51,7 +51,7 @@ function AppRoutes() {
 
       <Route path="/" element={protect(<RoomList />)} />
       <Route path="/rooms/new" element={protect(<CreateRoom />)} />
-      <Route path="/rooms/:id" element={protect(<RoomPlaceholder />)} />
+      <Route path="/rooms/:id" element={protect(<ChatRoom />)} />
 
       {/* 디자인 시스템 쇼케이스 (인증 불필요) */}
       <Route path="/design" element={<DesignSystem />} />

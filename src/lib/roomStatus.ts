@@ -36,6 +36,28 @@ export function formatRoomTime(startsAtISO: string, now: Date = new Date()): str
   return `${day} ${time}`
 }
 
+/**
+ * 싱크 타이머 표시값.
+ * - 시작 전: "12분 후 시작" / "1시간 5분 후"
+ * - 진행 중: 경과 시간 "MM:SS" (1시간 넘으면 "H:MM:SS")
+ */
+export function formatSyncTime(startsAtISO: string, nowMs: number = Date.now()): string {
+  const diff = nowMs - new Date(startsAtISO).getTime()
+
+  if (diff < 0) {
+    const leftMin = Math.ceil(-diff / 60_000)
+    if (leftMin >= 60) return `${Math.floor(leftMin / 60)}시간 ${leftMin % 60}분 후`
+    return `${leftMin}분 후 시작`
+  }
+
+  const totalSec = Math.floor(diff / 1000)
+  const h = Math.floor(totalSec / 3600)
+  const m = Math.floor((totalSec % 3600) / 60)
+  const s = totalSec % 60
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`
+}
+
 /** 같은 로컬 날짜(오늘)인지 — "오늘 밤" 필터용 */
 export function isToday(startsAtISO: string, now: Date = new Date()): boolean {
   return startOfDay(new Date(startsAtISO)) === startOfDay(now)
