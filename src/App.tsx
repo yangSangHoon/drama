@@ -6,6 +6,7 @@ import { ProfileSetup } from '@/pages/ProfileSetup'
 import { RoomList } from '@/pages/RoomList'
 import { CreateRoom } from '@/pages/CreateRoom'
 import { ChatRoom } from '@/pages/ChatRoom'
+import { Friends } from '@/pages/Friends'
 import { DesignSystem } from '@/pages/DesignSystem'
 import type { ReactElement } from 'react'
 
@@ -52,6 +53,7 @@ function AppRoutes() {
       <Route path="/" element={protect(<RoomList />)} />
       <Route path="/rooms/new" element={protect(<CreateRoom />)} />
       <Route path="/rooms/:id" element={protect(<ChatRoom />)} />
+      <Route path="/friends" element={protect(<Friends />)} />
 
       {/* 디자인 시스템 쇼케이스 (인증 불필요) */}
       <Route path="/design" element={<DesignSystem />} />

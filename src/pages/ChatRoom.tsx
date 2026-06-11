@@ -1,14 +1,21 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ChevronLeft, Users, Clock, Camera, Send, Share2, X, SmilePlus } from 'lucide-react'
+import { ChevronLeft, Users, Clock, Camera, Send, Share2, X, SmilePlus, UserPlus, Check } from 'lucide-react'
 import { useAuth } from '@/lib/auth'
 import { getRoom } from '@/lib/rooms'
 import type { Room } from '@/lib/database.types'
 import { computeStatus, formatRoomTime, formatSyncTime } from '@/lib/roomStatus'
 import { useRoomChannel, type ChatUser } from '@/hooks/useRoomChannel'
 import { uploadChatImage, ImageUploadError } from '@/lib/storage'
+import {
+  loadRelations,
+  sendFriendRequest,
+  acceptFriendRequest,
+  type FriendRelations,
+} from '@/lib/friends'
 import { BodolAvatar, Bodol } from '@/components/mascot'
 import { LoadingScreen } from '@/components/ui'
+import { ShareSheet } from '@/components/ShareSheet'
 import styles from './ChatRoom.module.css'
 
 /** 공감 반응 이모지 (스펙 §3.3) */
@@ -28,6 +35,9 @@ export function ChatRoom() {
   const [uploading, setUploading] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const [reactFor, setReactFor] = useState<string | null>(null)
+  const [showShare, setShowShare] = useState(false)
+  const [relations, setRelations] = useState<FriendRelations | null>(null)
+  const [friendBusy, setFriendBusy] = useState<string | null>(null)
 
   const msgEndRef = useRef<HTMLDivElement>(null)
   const fileRef = useRef<HTMLInputElement>(null)
@@ -96,6 +106,44 @@ export function ChatRoom() {
     setReactFor(null)
   }
 
+  // 참여자 시트 열 때 친구 관계 로드
+  useEffect(() => {
+    if (showMembers) loadRelations().then(setRelations)
+  }, [showMembers])
+
+  async function handleAddFriend(userId: string) {
+    setFriendBusy(userId)
+    try {
+      await sendFriendRequest(userId)
+      setRelations((prev) =>
+        prev ? { ...prev, outgoing: new Set(prev.outgoing).add(userId) } : prev,
+      )
+      setToast('친구 요청을 보냈어요.')
+    } catch (e) {
+      setToast(e instanceof Error ? e.message : '친구 요청에 실패했어요.')
+    } finally {
+      setFriendBusy(null)
+    }
+  }
+
+  async function handleAcceptFriend(userId: string, friendshipId: string) {
+    setFriendBusy(userId)
+    try {
+      await acceptFriendRequest(friendshipId)
+      setRelations((prev) => {
+        if (!prev) return prev
+        const incoming = new Map(prev.incoming)
+        incoming.delete(userId)
+        return { ...prev, incoming, friends: new Set(prev.friends).add(userId) }
+      })
+      setToast('친구가 됐어요!')
+    } catch (e) {
+      setToast(e instanceof Error ? e.message : '수락에 실패했어요.')
+    } finally {
+      setFriendBusy(null)
+    }
+  }
+
   if (loading) return <LoadingScreen message="채팅방 입장 중…" />
 
   if (notFound || !room) {
@@ -139,9 +187,9 @@ export function ChatRoom() {
           <span className={styles.name}>{fullTitle}</span>
           <button
             className={styles.iconBtn}
-            disabled
-            title="링크 공유는 M6에서 지원돼요"
-            aria-label="링크 공유"
+            onClick={() => setShowShare(true)}
+            title="방 공유 / 친구 초대"
+            aria-label="방 공유"
           >
             <Share2 size={18} />
           </button>
@@ -303,21 +351,62 @@ export function ChatRoom() {
               {members.length === 0 ? (
                 <p className={styles.hint}>아직 참여자를 불러오는 중…</p>
               ) : (
-                members.map((mem) => (
-                  <div key={mem.user_id} className={styles.member}>
-                    <BodolAvatar size={36} expression={mem.expression} color={mem.color} />
-                    <span className={styles.memberName}>
-                      {mem.nickname}
-                      {mem.user_id === me?.user_id && ' (나)'}
-                    </span>
-                    {mem.user_id === room.host_id && <span className={styles.hostBadge}>방장</span>}
-                  </div>
-                ))
+                members.map((mem) => {
+                  const isMe = mem.user_id === me?.user_id
+                  const incomingId = relations?.incoming.get(mem.user_id)
+                  const isFriend = relations?.friends.has(mem.user_id)
+                  const isOutgoing = relations?.outgoing.has(mem.user_id)
+                  return (
+                    <div key={mem.user_id} className={styles.member}>
+                      <BodolAvatar size={36} expression={mem.expression} color={mem.color} />
+                      <span className={styles.memberName}>
+                        {mem.nickname}
+                        {isMe && ' (나)'}
+                      </span>
+                      {mem.user_id === room.host_id && (
+                        <span className={styles.hostBadge}>방장</span>
+                      )}
+                      {!isMe &&
+                        relations &&
+                        (isFriend ? (
+                          <span className={styles.friendTag}>친구</span>
+                        ) : incomingId ? (
+                          <button
+                            className={styles.friendBtn}
+                            disabled={friendBusy === mem.user_id}
+                            onClick={() => handleAcceptFriend(mem.user_id, incomingId)}
+                          >
+                            <Check size={13} />
+                            수락
+                          </button>
+                        ) : isOutgoing ? (
+                          <span className={styles.friendTag}>요청함</span>
+                        ) : (
+                          <button
+                            className={styles.friendBtn}
+                            disabled={friendBusy === mem.user_id}
+                            onClick={() => handleAddFriend(mem.user_id)}
+                          >
+                            <UserPlus size={13} />
+                            친구 추가
+                          </button>
+                        ))}
+                    </div>
+                  )
+                })
               )}
             </div>
           </div>
         </div>
       )}
+
+      <ShareSheet
+        open={showShare}
+        onClose={() => setShowShare(false)}
+        title={fullTitle}
+        description={room.description || '같이 드라마 봐요! 🍿'}
+        link={window.location.href}
+      />
     </div>
   )
 }

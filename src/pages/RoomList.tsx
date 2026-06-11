@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Search, Plus } from 'lucide-react'
 import { useAuth } from '@/lib/auth'
 import { listRooms, getFriendIds } from '@/lib/rooms'
+import { listIncomingRequests } from '@/lib/friends'
 import type { Room } from '@/lib/database.types'
 import { computeStatus, isToday, STATUS_ORDER } from '@/lib/roomStatus'
 import { BodolAvatar, Bodol } from '@/components/mascot'
@@ -28,12 +29,14 @@ export function RoomList() {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
   const [friendIds, setFriendIds] = useState<Set<string>>(new Set())
+  const [requestCount, setRequestCount] = useState(0)
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
-  // 친구 id 1회 로드
+  // 친구 id / 받은 요청 수 1회 로드
   useEffect(() => {
     getFriendIds().then((ids) => setFriendIds(new Set(ids)))
+    listIncomingRequests().then((r) => setRequestCount(r.length))
   }, [])
 
   // 검색어 변화 시 (디바운스) 방 목록 로드
@@ -115,6 +118,10 @@ export function RoomList() {
           {menuOpen && (
             <div className={styles.menu}>
               <div className={styles.menuName}>{profile?.nickname}</div>
+              <Link to="/friends" className={styles.menuItem} onClick={() => setMenuOpen(false)}>
+                친구
+                {requestCount > 0 && <span className={styles.menuBadge}>{requestCount}</span>}
+              </Link>
               <Link to="/design" className={styles.menuItem} onClick={() => setMenuOpen(false)}>
                 디자인 시스템
               </Link>

@@ -53,7 +53,9 @@
   color: var(--ink);
 }
 .menuItem {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
   text-align: left;
   padding: 10px 12px;
@@ -63,6 +65,19 @@
 }
 .menuItem:hover {
   background: var(--cream);
+}
+.menuBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  background: var(--coral);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
 }
 
 .search {
